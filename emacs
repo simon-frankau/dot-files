@@ -41,7 +41,9 @@
 (global-font-lock-mode t) ; Colour! Everywhere!
 (ido-mode t)              ; Use ido (used to use iswitchb)
 (setq ido-enable-flex-matching t) ; I've got used to Idea
-(global-subword-mode t)   ; Deal with camelCase
+
+(when (fboundp 'global-subword-mode)
+  (global-subword-mode t)) ; Deal with camelCase (not in older emacs...)
 
 (server-mode t)           ; Enable emacsclient.
 
