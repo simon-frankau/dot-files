@@ -15,7 +15,7 @@ RED='\e[0;31m'
 OFF='\[\e[0m\]'
 
 # time user@host pwd (branch)
-export PS1="\[\e]0;\w\a\]\n$BLUE\t $GREEN\u@\h $YELLOW\w$RED$(__git_ps1)$OFF\n\\$ "
+export PS1="\[\e]0;\w\a\]\n$BLUE\t $GREEN\u@\h $YELLOW\w$RED\$(__git_ps1)$OFF\n\\$ "
 
 export PATH=$PATH:$HOME/bin
 export CLICOLOR=true
