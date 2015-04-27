@@ -1,6 +1,0 @@
-This directory contains dot-files that I might want to share between
-multiple servers, so that I can put them under source control, and
-share them and manage changes.
-
-I can then symlink the actual dot files in the home directory to these
-files...
