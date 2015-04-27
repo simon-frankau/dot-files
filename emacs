@@ -1,13 +1,12 @@
 ;; Simon Frankau's .emacs file.
-;; Last edited 2011-06-08
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basics
 
-; FIXME: Conditionally execute if in X.
+; FIXME: Conditionally execute parts if in X.
 
 ;; Need to store my lisp somewhere...
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/repos/dot-files/lisp")
 
 ;; Favourite programming font.
 ;(set-face-font 'default "proggytinytt-14")
@@ -40,7 +39,10 @@
 (column-number-mode t)    ; Column numbers on.
 (show-paren-mode t)       ; Automatically highlight parens.
 (global-font-lock-mode t) ; Colour! Everywhere!
-(iswitchb-mode 1)         ; Use iswitchb.
+(ido-mode t)              ; Use ido (used to use iswitchb)
+(setq ido-enable-flex-matching t) ; I've got used to Idea
+(global-subword-mode t)   ; Deal with camelCase
+
 (server-mode t)           ; Enable emacsclient.
 
 ;; ibuffer
@@ -85,14 +87,12 @@
 ; I hope this doesn't screw with Makefile-mode!
 (setq-default indent-tabs-mode nil)
 
-; FIXME (require 'column-marker)
+(require 'column-marker)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Ispell
 
 (setq ispell-enable-tex-parser t)
-; Easier to install than ispell on Win32.
-(setq-default ispell-program-name "c:/program files/aspell/bin/aspell")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; C++ mode
@@ -112,8 +112,18 @@
 
 ;; .h files can be C++
 (add-to-list 'auto-mode-alist '("\.h$" . c++-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TeX
+
 ;; Hook .tex to latex-mode.
 (add-to-list 'auto-mode-alist '("\.tex$" . latex-mode))
+
+;; Disable stupid subscript stuff in TeX-mode.
+(eval-after-load "tex-mode" '(fset 'tex-font-lock-suscript 'ignore))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Misc
 
 ;; Draw tabs with the same color as trailing whitespace
 (add-hook 'font-lock-mode-hook
@@ -122,80 +132,20 @@
              nil
              '(("\t" 0 'trailing-whitespace prepend)))))
 
-(setq         compilation-window-height 32)     ; Compilation output window.
 (setq-default show-trailing-whitespace t)       ; See the trailing whitespace.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; OCAML mode.
-
-;(add-to-list 'load-path "/homes/sgf22/ocaml.emacs")
-;(add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . caml-mode))
-;(autoload 'caml-mode "caml" "Major mode for editing Caml code." t)
-;(autoload 'run-caml "inf-caml" "Run an inferior Caml process." t)
-;(autoload 'camldebug "camldebug" "Run the Caml debugger." t)
-
-;; OCAML mode seems to explicitly want the activation of colour.
-;(add-hook 'caml-mode-hook 'turn-on-font-lock)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Make
-
-;; Work with visual studio...
-;; FIXME: Using unix-utils now (setq compile-command "C:/Progra~1/Micros~1.1/Common7/IDE/devenv.exe XLayerContext.sln /build Debug")
-;; (setq compile-command "make exes")
-(setq compile-command "c:/temp/build_aleph.cmd")
+(setq         compilation-window-height 32)     ; Compilation output window.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Source control
 
-; FIXME (load-library "clearcase")
-
-;; P4 stuff...
-;(load-library "p4")
-;(require 'vc-p4)
-;(setq p4-do-find-file nil)
-;(setq p4-verbose      nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Paths
-
-;(setenv "PATH" (concat "C:/p4_ws/frankaus_fpf_blah_ws/fpf_dev/ThirdParty/UnixUtils;" (getenv "PATH")))
-
-; ediff sometimes gets lost. Argh.
-;(setq ediff-diff-program "c:/p4_ws/frankaus_fpf_blah_ws/FPF/ThirdParty/UnixUtils/diff.exe")
-;(setq ediff-diff3-program "c:/p4_ws/frankaus_fpf_blah_ws/FPF/ThirdParty/UnixUtils/diff.exe")
+; FIXME: magit
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Haskell mode
 
-; FIXME
-
-;(load-library "haskell-mode-2.1\\haskell-site-file")
-;(load-library "haskell-mode-2.1/haskell-site-file")
-
-;; Add camel case to Haskell
-;(autoload 'camelCase-mode "~/camelCase-mode")
-;(add-hook 'haskell-mode-hook '(lambda () (camelCase-mode 1)))
-
-; Nice little function to align 'name'd definitions.
-;(defun ra ()
-;  "Align name exprs"
-;  (interactive)
-;  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)=" 1 align-default-spacing nil)
-;  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)[a-zA-Z']*$" 1 align-default-spacing nil))
-
-;; FPF TAGS Table location fix
-;(add-hook 'find-file-hook 'fpf-tags-redirect-hook)
-;(defun fpf-tags-redirect-hook ()
-;"Redirect the FPF TAGS file's default-directory to be the FPF src directory rather than the Build directory which is where the TAGS file is kept."
-;(interactive)
-;(if (string= (substring buffer-file-name -10 -1) "Build/TAG") (setq default-directory (expand-file-name "../src"))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TeX mode
-
-;; Stupid subscript stuff in TeX-mode.
-(eval-after-load "tex-mode" '(fset 'tex-font-lock-suscript 'ignore))
+;; FIXME: Install as needed...
+(require 'haskell-mode nil 'noerror)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Lua mode
@@ -234,22 +184,11 @@
         ("CANCELLED"  . (:foreground "darkgreen"   :weight bold))
         ))
 
-(setq org-tag-alist '(("Asia"     . ?a)
-                      ("Chat"     . ?c)
-                      ("Desk"     . ?d)
-                      ("Outside"  . ?o)
-                      ("Aaron"    . ?A)
-                      ("Ben"      . ?B)
-                      ("Roman"    . ?C)
-                      ("Dom"      . ?D)
-                      ("Elias"    . ?E)
-                      ("Marc"     . ?M)
-                      ("Peter"    . ?P)
-                      ("Rob"      . ?R)
-                      ("Simon"    . ?S)
-                      ("Bernhard" . ?W)
-                      ("Roland"   . ?Z)
-                      ))
+;; For whatever future tags are needed...
+;(setq org-tag-alist '(("Asia"     . ?a)
+;                      ("Chat"     . ?c)
+;                      ("Desk"     . ?d)
+;                      ))
 
 (setq org-tags-column 120)
 (setq org-agenda-tags-column 120)
@@ -269,40 +208,9 @@
         ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Semantic bovinator...
-
-;(load-library "cedet-1.1/common/cedet.el")
-;(global-ede-mode 1)
-;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
-;(require 'semantic-ia)
-;; (require 'semantic-gcc)
-
-;(ede-cpp-root-project "Aleph"
-; :file "C:/p4_ws/frankaus_qa_ws/depot/QA/QALibrary/EDG/aleph/CMakeLists.txt"
-; :include-path '("/src" "/local_build/src"))
-
-;; (setq semanticdb-project-roots '("C:/p4_ws/frankaus_qa_ws/depot/QA/QALibrary/EDG/aleph/src"))
-
-;; Enable M-* for popping back from semantic jumps
-;(require 'etags)
-;(defun push-tag-mark ()
-;  (ring-insert find-tag-marker-ring (point-marker)))
-
-;;; FIXME: Should be hooked onto specific modes!
-;(global-set-key "\M-?" 'semantic-ia-complete-symbol)
-;(global-set-key (kbd "C-M-?") 'senator-completion-menu-popup)
-
-;(global-set-key "\C-cj" 'semantic-ia-fast-jump)
-;(global-set-key "\C-cq" 'semantic-ia-show-doc)
-;(global-set-key "\C-cs" 'semantic-ia-show-summary)
-;(global-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle)
-;(global-set-key "\C-c=" 'semantic-decoration-include-visit)
-;(global-set-key "\C-c\C-r" 'semantic-symref)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; More new things
 
-; FIXME (require 'revbufs)
+(require 'revbufs)
 
 (defun copy-full-path-to-kill-ring ()
   "copy buffer's full path to kill ring"
@@ -311,21 +219,6 @@
     (kill-new (replace-regexp-in-string "/" "\\\\" (file-truename buffer-file-name)))))
 
 (global-set-key (kbd "C-c C-p") 'copy-full-path-to-kill-ring)
-(global-set-key (kbd "C-c C-a") 'align-regexp)
-
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("f:/org/Steering.org" "f:/org/Misc.org" "f:/org/FPF.org" "f:/org/Aleph.org"))))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
-
 
 (put 'narrow-to-region 'disabled nil)
 
